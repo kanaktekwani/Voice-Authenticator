@@ -6,3 +6,9 @@ body {
 a {
   color: #00B7FF;
 }
+
+/* Voice Authenticator status styling */
+.auth-status {
+  font-size: 2em;
+  margin-top: 1em;
+}
