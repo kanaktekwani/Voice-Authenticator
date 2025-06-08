@@ -3,6 +3,7 @@ extends layout
 block content
   h1 Voice Authenticator
   div#auth-status.auth-status Authenticity: –
+  button#verify-btn.verify-btn(type="button") Verify Me
 
 append scripts
   script(type="module" src='/js/bundle.mjs')
