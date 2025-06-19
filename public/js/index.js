@@ -3,24 +3,36 @@ import axios from 'axios';
 
 (async () => {
   try {
-    // Initialize Zoom SDK with required capabilities
+    // Initialize Zoom SDK with necessary capabilities
     await zoomSdk.config({
       capabilities: [
         'runRenderingContext',
-        'drawWebView',
-        'getRunningContext',
-        'getMeetingContext',
+        'openUrl',
         'startRTMS',
         'stopRTMS',
+        'drawWebView',
+        'clearWebView',
+        'getRunningContext',
+        'getMeetingContext',
+        'getMeetingParticipants',
+        'getUserContext',
+        'getMeetingUUID',
+        'postMessage',
+        'drawImage',
+        'closeRenderingContext',
+        'setVirtualForeground',
+        'removeVirtualForeground',
         'setEmojiReaction',
+        'getEmojiConfiguration',
+        'sendMessage',
       ],
     });
 
-    // Get the current rendering context
+    // Check current rendering context
     const { context: runningCtx } = await zoomSdk.getRunningContext();
     console.log('🧭 Running context:', runningCtx);
 
-    // If not already in Camera Mode, switch to it
+    // Switch to Camera Mode if not already
     if (runningCtx !== 'inCamera') {
       try {
         await zoomSdk.runRenderingContext({ view: 'camera' });
@@ -30,7 +42,7 @@ import axios from 'axios';
       }
     }
 
-    // Draw your app's UI as a WebView overlay on your video
+    // Draw WebView overlay on video
     await zoomSdk.drawWebView({
       x: 0,
       y: 0,
@@ -39,46 +51,65 @@ import axios from 'axios';
       zIndex: 2,
     });
 
-    // Start RTMS for emoji reactions
-    await zoomSdk.callZoomApi('startRTMS');
+    // Optionally start RTMS if needed (currently no emoji reaction used)
+    // await zoomSdk.callZoomApi('startRTMS');
 
   } catch (e) {
     console.error('Zoom SDK init failed:', e);
   }
 
-  // Reference to status display element
+  // Elements reference
   const statusEl = document.getElementById('auth-status');
   const verifyBtn = document.getElementById('verify-btn');
 
-  // Handle Verify Me button click
+  // Verify Me button handler (redirect to Zoom SDK page for testing)
   if (verifyBtn) {
   verifyBtn.onclick = async () => {
+    let meetingId = 'unknown';
     try {
       const context = await zoomSdk.getMeetingContext();
-      const meetingId = context?.meetingUUID || 'unknown';
-      // Redirects the WebView overlay to Google (for testing)
-      window.location.href = `https://appssdk.zoom.us/`;
+      meetingId = context?.meetingUUID || 'unknown';
     } catch (e) {
-      console.error('Failed to get meeting context:', e);
+      console.warn('Skipping context fetch due to permissions:', e.message);
+    }
+
+    try {
+      await zoomSdk.openUrl({
+        url: `https://appssdk.zoom.us`
+      });
+    } catch (err) {
+      console.error('Failed to open URL with Zoom SDK:', err);
     }
   };
 }
 
 
-  // Function to fetch status and update UI + emoji
+
+  // Function to update status and button color
   async function fetchStatus() {
     try {
       const resp = await axios.get('/api/status');
       const { status } = resp.data;
-      const emoji = status === 'human' ? '✅' : '❌';
-      if (statusEl) statusEl.textContent = `${status} ${emoji}`;
-      zoomSdk.setEmojiReaction({ emoji });
+
+      // Update text status
+      if (statusEl) statusEl.textContent = status;
+
+      // Update button color based on status
+      if (verifyBtn) {
+        verifyBtn.style.backgroundColor = status === 'human' ? '#4CAF50' : '#f44336'; // Green or Red
+        verifyBtn.style.color = '#ffffff'; // White text
+      }
+
+      // Temporarily stopped emoji reactions
+      // const emoji = status === 'human' ? '✅' : '❌';
+      // await zoomSdk.setEmojiReaction({ emoji });
+
     } catch (err) {
       console.error('❌ Failed to fetch status:', err);
     }
   }
 
-  // Start polling loop
+  // Start polling status
   await fetchStatus();
   setInterval(fetchStatus, 1000);
 })();
