@@ -14,6 +14,8 @@ import indexRoutes from './server/routes/index.js';
 import authRoutes from './server/routes/auth.js';
 
 import { appName, port, redirectUri } from './config.js';
+import userStatusRoutes from './server/routes/userStatus.js';
+
 
 // Python backend URL (status & SSE)
 const pythonBackendUrl = process.env.PYTHON_BACKEND_URL || 'http://localhost:5000';
@@ -95,6 +97,8 @@ app.use(express.static(`${__dirname}/dist`));
 /* Routing */
 app.use('/', indexRoutes);
 app.use('/auth', authRoutes);
+app.use('/api/user-status', userStatusRoutes);
+
 
 // Error handler
 app.use((err, req, res, next) => {

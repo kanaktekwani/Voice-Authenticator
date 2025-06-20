@@ -153,3 +153,30 @@ export function getDeeplink(token) {
         }),
     }).then((data) => Promise.resolve(data.deeplink));
 }
+
+/**
+ * Get user entitlements from the Zoom Marketplace
+ * @param {string} userId - Zoom user ID
+ * @param {string} token - Zoom App access token
+ * @return {Promise<Array>} - Array of entitlements (or empty array)
+ */
+export async function getUserEntitlements(userId, token) {
+    if (!userId || !token) throw createError(400, 'Missing userId or access token for entitlement check');
+
+    try {
+        const response = await axios.get(`${baseURL}/v2/marketplace/monetization/entitlements`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            params: {
+                user_id: userId,
+            },
+        });
+
+        return response.data;
+    } catch (err) {
+        console.error('❌ Failed to fetch user entitlements:', err.response?.data || err.message);
+        return [];
+    }
+}
+

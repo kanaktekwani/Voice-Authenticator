@@ -3,6 +3,7 @@ import { query } from 'express-validator';
 
 import { handleError, sanitize } from '../helpers/routing.js';
 import { getDeeplink, getToken } from '../helpers/zoom-api.js';
+import { getZoomUser } from '../helpers/zoom-api.js';
 
 import session from '../session.js';
 
@@ -27,6 +28,7 @@ const validateQuery = [
         .escape(),
 ];
 
+
 /*
  * Redirect URI - Zoom App Launch handler
  * The user is redirected to this route when they authorize your app
@@ -44,7 +46,22 @@ router.get('/', session, validateQuery, async (req, res, next) => {
         req.session.verifier = null;
 
         // get Access Token from Zoom
-        const { access_token: accessToken } = await getToken(code, verifier);
+        const { access_token: accessToken, refresh_token, expires_in } = await getToken(code, verifier);
+
+        req.session.accessToken = accessToken;
+        console.log('🔑 Access Token:', accessToken);
+        console.log('🔄 Refresh Token:', refresh_token);
+        console.log('⏰ Expires In (seconds):', expires_in);
+        //const zoomUser = await getZoomUser('me', accessToken);
+        // 🔍 Fetch Zoom user info
+        const zoomUser = await getZoomUser('me', accessToken);
+
+        // 💾 Store in session (optional but useful)
+        req.session.userId = zoomUser.id;
+
+        // 🧾 Log user info
+        console.log('✅ Zoom User ID:', zoomUser.id);
+        console.log('📧 Email:', zoomUser.email);
 
         // fetch deeplink from Zoom API
         const deeplink = await getDeeplink(accessToken);
@@ -54,6 +71,18 @@ router.get('/', session, validateQuery, async (req, res, next) => {
     } catch (e) {
         next(handleError(e));
     }
+});
+
+router.get('/session-info', (req, res) => {
+    const token = req.session?.accessToken;
+    if (!token) {
+        return res.status(401).json({ error: 'No access token in session' });
+    }
+
+    const userId = req.session?.userId || null;
+    const paid = req.session?.hasPaidPlan || false;
+
+    return res.json({ userId, paid });
 });
 
 export default router;
