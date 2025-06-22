@@ -8,10 +8,14 @@ import logger from 'morgan';
 import { dirname } from 'path';
 import { fileURLToPath, URL } from 'url';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import mongoose from 'mongoose';
+
 
 import { start } from './server/server.js';
 import indexRoutes from './server/routes/index.js';
 import authRoutes from './server/routes/auth.js';
+import registerDeviceRoutes from './server/routes/registerDevice.js';
+
 
 import { appName, port, redirectUri } from './config.js';
 import userStatusRoutes from './server/routes/userStatus.js';
@@ -99,6 +103,9 @@ app.use('/', indexRoutes);
 app.use('/auth', authRoutes);
 app.use('/api/user-status', userStatusRoutes);
 
+app.use('/api/register-device', registerDeviceRoutes);
+
+
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -111,6 +118,18 @@ app.use((err, req, res, next) => {
 
 // Fallback to home for any other route
 app.get('*', (req, res) => res.redirect('/'));
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => {
+  console.log('✅ Connected to MongoDB');
+})
+.catch(err => {
+  console.error('❌ MongoDB connection error:', err);
+});
+
 
 // Launch server
 start(app, port).catch((e) => {
