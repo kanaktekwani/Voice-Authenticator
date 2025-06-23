@@ -4,6 +4,8 @@ import { query } from 'express-validator';
 import { handleError, sanitize } from '../helpers/routing.js';
 import { getDeeplink, getToken } from '../helpers/zoom-api.js';
 import { getZoomUser } from '../helpers/zoom-api.js';
+import ZoomUser from '../models/ZoomUser.js';
+
 
 import session from '../session.js';
 
@@ -62,6 +64,13 @@ router.get('/', session, validateQuery, async (req, res, next) => {
         // 🧾 Log user info
         console.log('✅ Zoom User ID:', zoomUser.id);
         console.log('📧 Email:', zoomUser.email);
+
+        // 💾 Save to DB
+        await ZoomUser.findOneAndUpdate(
+        { zoomUserId: zoomUser.id },
+        { email: zoomUser.email },
+        { upsert: true, new: true }
+        );
 
         // fetch deeplink from Zoom API
         const deeplink = await getDeeplink(accessToken);
