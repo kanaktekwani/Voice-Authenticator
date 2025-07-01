@@ -12,6 +12,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import { start } from './server/server.js';
 import indexRoutes from './server/routes/index.js';
 import authRoutes from './server/routes/auth.js';
+import installRoutes from './server/routes/install.js';
 
 import { appName, port, redirectUri } from './config.js';
 import userStatusRoutes from './server/routes/userStatus.js';
@@ -98,6 +99,8 @@ app.use(express.static(`${__dirname}/dist`));
 app.use('/', indexRoutes);
 app.use('/auth', authRoutes);
 app.use('/api/user-status', userStatusRoutes);
+app.use('/', installRoutes);
+
 
 
 // Error handler

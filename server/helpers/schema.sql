@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS Users (
+  userId INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT NOT NULL,
+  name TEXT NOT NULL,
+  password TEXT NOT NULL,
+  isPremium INTEGER DEFAULT 0,
+  deviceId TEXT
+);

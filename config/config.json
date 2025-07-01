@@ -1,0 +1,18 @@
+{
+  "development": {
+    "dialect": "sqlite",
+    "storage": "./db.sqlite"
+  },
+  "test": {
+    "dialect": "sqlite",
+    "storage": ":memory:"
+  },
+  "production": {
+    "username": "your_pg_username",
+    "password": "your_pg_password",
+    "database": "originstory",
+    "host": "your-postgres-host.amazonaws.com",
+    "dialect": "postgres",
+    "port": 5432
+  }
+}
