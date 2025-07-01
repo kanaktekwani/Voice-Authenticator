@@ -13,6 +13,8 @@ import { start } from './server/server.js';
 import indexRoutes from './server/routes/index.js';
 import authRoutes from './server/routes/auth.js';
 import installRoutes from './server/routes/install.js';
+import signupRoutes from './server/routes/signup.js';
+import loginRoutes from './server/routes/login.js';
 
 import { appName, port, redirectUri } from './config.js';
 import userStatusRoutes from './server/routes/userStatus.js';
@@ -100,6 +102,10 @@ app.use('/', indexRoutes);
 app.use('/auth', authRoutes);
 app.use('/api/user-status', userStatusRoutes);
 app.use('/', installRoutes);
+app.use(signupRoutes);
+app.use(loginRoutes);
+app.use(express.static('public'));
+
 
 
 
