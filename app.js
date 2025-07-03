@@ -43,7 +43,7 @@ app.use(
       directives: {
         defaultSrc: ["'self'", `https://${redirectHost}`, 'https://appssdk.zoom.us'],
         scriptSrc:  ["'self'", 'https://appssdk.zoom.us'],
-        styleSrc:   ["'self'", "'unsafe-inline'"],
+        styleSrc:   ["'self'", "'unsafe-inline'",'https://fonts.googleapis.com'],
         imgSrc:     ["'self'", `https://${redirectHost}`],
         connectSrc: ["'self'", `https://${redirectHost}`, 'https://api.zoom.us', pythonBackendUrl],
         frameSrc:   ["'self'", 'https://appssdk.zoom.us'],
@@ -98,7 +98,10 @@ app.use(logger('dev', { stream: { write: (msg) => dbg(msg) } }));
 app.use(express.static(`${__dirname}/dist`));
 
 /* Routing */
-app.use('/', indexRoutes);
+//app.use('/', indexRoutes);
+app.get('/', (req, res) => {
+  res.sendFile(`${__dirname}/public/login.html`);
+});
 app.use('/auth', authRoutes);
 app.use('/api/user-status', userStatusRoutes);
 app.use('/', installRoutes);

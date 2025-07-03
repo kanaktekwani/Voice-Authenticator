@@ -2,101 +2,162 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login - OriginStory</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OriginStory Login</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-gradient-start: #0d0d0d;
+      --bg-gradient-end: #1f1f3e;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent: #536DFE;
+      --accent-hover: #4159d8;
+      --text-light: #f0f0f0;
+      --input-bg: rgba(255, 255, 255, 0.1);
+      --input-border: rgba(255, 255, 255, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: sans-serif;
-      background-color: #fff;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
       display: flex;
-      flex-direction: column;
       align-items: center;
-      margin-top: 80px;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
     }
 
-    h1 {
-      color: #000;
-    }
-
-    .form-container {
-      background-color: #f9f9f9;
-      padding: 30px 40px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 300px;
+    .container {
+      width: 100%;
+      max-width: 420px;
       text-align: center;
+    }
+
+    .logo {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      text-shadow: 0 2px 8px rgba(83, 109, 254, 0.7);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover { transform: translateY(-5px); }
+
+    h2 {
+      margin-bottom: 1.5rem;
+      font-size: 1.75rem;
+      font-weight: 500;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.95rem;
     }
 
     input {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 2px solid #ddd;
-      border-radius: 5px;
+      padding: 0.75rem;
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: var(--text-light);
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input::placeholder { color: rgba(240, 240, 240, 0.6); }
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
     }
 
     button {
       width: 100%;
-      padding: 10px;
-      background-color: #1a1a1a;
-      color: white;
+      padding: 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
       border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      margin-top: 10px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
 
-    button:hover {
-      background-color: #444;
+    button:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    #message {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      min-height: 1.2em;
     }
 
     .signup-link {
-      margin-top: 15px;
-      display: block;
-      color: #007bff;
-      text-decoration: none;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
     }
 
-    .signup-link:hover {
-      text-decoration: underline;
+    .signup-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .signup-link a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.5rem; }
+      .logo { font-size: 2.5rem; }
+      h2 { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <h1>OriginStory</h1>
-  <div class="form-container">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="Username" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <a href="/signup.html" class="signup-link">Don't have an account? Sign up</a>
+  <div class="container">
+    <div class="logo">OriginStory</div>
+    <div class="card">
+      <h2>Welcome Back</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="••••••••" required />
+        </div>
+        <button type="submit" id="loginBtn">Log In</button>
+      </form>
+      <p id="message"></p>
+      <div class="signup-link">
+        New here? <a href="/signup.html">Create an account</a>
+      </div>
+    </div>
   </div>
-
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-
-      const response = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert('✅ Login successful');
-        // Redirect or show logged-in page
-      } else {
-        alert('❌ Login failed: ' + data.message);
-      }
-    });
-  </script>
+  <script src="/js/login.js" defer></script>
 </body>
 </html>

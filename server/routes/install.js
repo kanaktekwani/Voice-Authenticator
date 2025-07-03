@@ -4,12 +4,14 @@ const router = express.Router();
 import db from '../helpers/db.js';
 
 router.post('/install', async (req, res) => {
-  const { username, name, password, isPremium, deviceId } = req.body;
+  const { email, name, password, isPremium, deviceId, meetingID } = req.body;
 
   try {
     const result = await db.query(
-      `INSERT INTO users (username, name, password, isPremium, deviceId) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [username, name, password, isPremium, deviceId]
+      `INSERT INTO users (email, name, password, isPremium, deviceId, meetingID)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING id`,
+      [email, name, password, isPremium, deviceId, meetingID]
     );
 
     console.log('✅ User inserted with ID', result.rows[0].id);

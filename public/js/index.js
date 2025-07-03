@@ -65,13 +65,28 @@ import axios from 'axios';
   // Verify Me button handler (redirect to Zoom SDK page for testing)
   if (verifyBtn) {
   verifyBtn.onclick = async () => {
-    let meetingId = 'unknown';
+    if (verifyBtn) {
+  verifyBtn.onclick = async () => {
+    let meetingID = 'unknown';
     try {
-      const context = await zoomSdk.getMeetingContext();
-      meetingId = context?.meetingUUID || 'unknown';
+      const { meetingID: mid, meetingTopic } = await zoomSdk.getMeetingContext();
+      meetingID = mid;
+      console.log('📌 Meeting ID:', meetingID);
+      console.log('📌 Meeting Topic:', meetingTopic);
     } catch (e) {
-      console.warn('Skipping context fetch due to permissions:', e.message);
+      console.warn('⚠️ Failed to get meeting context:', e.message);
     }
+
+    try {
+      await zoomSdk.openUrl({
+        url: `https://appssdk.zoom.us`
+      });
+    } catch (err) {
+      console.error('Failed to open URL with Zoom SDK:', err);
+    }
+  };
+}
+
 
     try {
       await zoomSdk.openUrl({
