@@ -54,4 +54,13 @@ router.get('/install', session, async (req, res) => {
     res.redirect(url.href);
 });
 
+// Protected test route
+router.get('/protected', (req, res) => {
+  if (req.session && req.session.userId) {
+    res.send(`🔐 Logged in as ${req.session.email}`);
+  } else {
+    res.status(401).send('🚫 Not logged in');
+  }
+});
+
 export default router;

@@ -15,10 +15,11 @@ import authRoutes from './server/routes/auth.js';
 import installRoutes from './server/routes/install.js';
 import signupRoutes from './server/routes/signup.js';
 import loginRoutes from './server/routes/login.js';
+import protectedRoutes from './server/routes/protected.js';
 
 import { appName, port, redirectUri } from './config.js';
 import userStatusRoutes from './server/routes/userStatus.js';
-
+import session from 'express-session';
 
 // Python backend URL (status & SSE)
 const pythonBackendUrl = process.env.PYTHON_BACKEND_URL || 'http://localhost:5000';
@@ -94,6 +95,20 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev', { stream: { write: (msg) => dbg(msg) } }));
 
+
+app.use(
+  session({
+    secret: 'originstory-secret-key', // Replace with a secure, random secret from environment variables
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false, // Set to true since you are using 'trust proxy'
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
+  })
+);
+
 // Serve static front-end bundle
 app.use(express.static(`${__dirname}/dist`));
 
@@ -108,6 +123,7 @@ app.use('/', installRoutes);
 app.use(signupRoutes);
 app.use(loginRoutes);
 app.use(express.static('public'));
+app.use(protectedRoutes);
 
 
 
