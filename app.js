@@ -16,6 +16,7 @@ import installRoutes from './server/routes/install.js';
 import signupRoutes from './server/routes/signup.js';
 import loginRoutes from './server/routes/login.js';
 import protectedRoutes from './server/routes/protected.js';
+import whoamiRoutes from './server/routes/whoami.js';
 
 import { appName, port, redirectUri } from './config.js';
 import userStatusRoutes from './server/routes/userStatus.js';
@@ -94,6 +95,7 @@ app.use(compression());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev', { stream: { write: (msg) => dbg(msg) } }));
+app.use('/', whoamiRoutes);
 
 
 app.use(

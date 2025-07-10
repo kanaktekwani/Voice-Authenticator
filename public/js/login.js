@@ -17,7 +17,12 @@ form.addEventListener('submit', async (e) => {
 
   if (response.ok) {
     message.style.color = 'green';
-    message.textContent = '✅ Login successful!';
+    message.textContent = '✅ Login successful! Redirecting...';
+
+    // 🔁 Redirect to IP page
+    setTimeout(() => {
+      window.location.href = '/home.html';  // this page shows the IP
+    }, 1000);
   } else {
     message.style.color = 'red';
     message.textContent = result.error || '❌ Login failed.';
