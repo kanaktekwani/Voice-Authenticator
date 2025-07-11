@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome</title>
+ 
+
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,19 +25,15 @@
       border-radius: 12px;
       box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
-
-    #ip-info {
-      margin-top: 1rem;
-      font-size: 1.2rem;
-    }
   </style>
 </head>
 <body>
   <div class="card">
     <h2>✅ Logged In</h2>
-    <p id="ip-info">Fetching your IP address...</p>
+    <p id="ip"></p>
   </div>
-
+ <script src="https://appssdk.zoom.us/sdk.js"></script>
+  <!-- ✅ Reference plain JS (not module) -->
   <script src="/js/home.js"></script>
 </body>
 </html>

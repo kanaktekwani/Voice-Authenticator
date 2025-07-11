@@ -17,6 +17,9 @@ import signupRoutes from './server/routes/signup.js';
 import loginRoutes from './server/routes/login.js';
 import protectedRoutes from './server/routes/protected.js';
 import whoamiRoutes from './server/routes/whoami.js';
+import handshakeRoutes from './server/routes/handshake.js';
+import storeMeetingIdRoute from './server/routes/storeMeetingId.js';
+import homeRoutes from './server/routes/home.js';
 
 import { appName, port, redirectUri } from './config.js';
 import userStatusRoutes from './server/routes/userStatus.js';
@@ -45,7 +48,7 @@ app.use(
       directives: {
         defaultSrc: ["'self'", `https://${redirectHost}`, 'https://appssdk.zoom.us'],
         scriptSrc:  ["'self'", 'https://appssdk.zoom.us'],
-        styleSrc:   ["'self'", "'unsafe-inline'",'https://fonts.googleapis.com'],
+        styleSrc:   ["'self'", "'unsafe-inline'"],
         imgSrc:     ["'self'", `https://${redirectHost}`],
         connectSrc: ["'self'", `https://${redirectHost}`, 'https://api.zoom.us', pythonBackendUrl],
         frameSrc:   ["'self'", 'https://appssdk.zoom.us'],
@@ -55,8 +58,7 @@ app.use(
     },
     crossOriginEmbedderPolicy: false,
   })
-);
-// #######################################
+);// #######################################
 
 // JSON status route: proxy to Python backend explicitly
 app.get('/api/status', async (req, res, next) => {
@@ -95,21 +97,27 @@ app.use(compression());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev', { stream: { write: (msg) => dbg(msg) } }));
-app.use('/', whoamiRoutes);
-
 
 app.use(
   session({
-    secret: 'originstory-secret-key', // Replace with a secure, random secret from environment variables
+    secret: 'originstory-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false, // Set to true since you are using 'trust proxy'
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      secure: true, // should be true only with HTTPS
+      maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
+
+
+
+app.use(express.static('public'));
+app.use('/', whoamiRoutes);
+app.use('/api', handshakeRoutes);
+app.use( storeMeetingIdRoute);
+app.use('/api', homeRoutes);
 
 // Serve static front-end bundle
 app.use(express.static(`${__dirname}/dist`));
@@ -124,7 +132,7 @@ app.use('/api/user-status', userStatusRoutes);
 app.use('/', installRoutes);
 app.use(signupRoutes);
 app.use(loginRoutes);
-app.use(express.static('public'));
+
 app.use(protectedRoutes);
 
 
