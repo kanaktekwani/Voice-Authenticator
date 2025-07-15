@@ -9,6 +9,8 @@ import { dirname } from 'path';
 import { fileURLToPath, URL } from 'url';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
+
+
 import { start } from './server/server.js';
 import indexRoutes from './server/routes/index.js';
 import authRoutes from './server/routes/auth.js';
@@ -20,6 +22,7 @@ import whoamiRoutes from './server/routes/whoami.js';
 import handshakeRoutes from './server/routes/handshake.js';
 import storeMeetingIdRoute from './server/routes/storeMeetingId.js';
 import homeRoutes from './server/routes/home.js';
+import probabilitiesRoutes from './server/routes/probabilities.js';
 
 import { appName, port, redirectUri } from './config.js';
 import userStatusRoutes from './server/routes/userStatus.js';
@@ -118,6 +121,10 @@ app.use('/', whoamiRoutes);
 app.use('/api', handshakeRoutes);
 app.use( storeMeetingIdRoute);
 app.use('/api', homeRoutes);
+app.use(probabilitiesRoutes);
+app.use(storeMeetingIdRoute);
+
+
 
 // Serve static front-end bundle
 app.use(express.static(`${__dirname}/dist`));

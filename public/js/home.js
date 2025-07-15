@@ -1,38 +1,47 @@
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    // ✅ Load Zoom SDK only inside Zoom client
     if (window.zoomSdk) {
       await zoomSdk.config({
-        capabilities: ['getMeetingContext'],
+        capabilities: ['getMeetingUUID', 'onMeeting'],
         version: '1.9.0',
       });
 
-      const context = await zoomSdk.getMeetingContext();
-      console.log("✅ Meeting Context:", context);
+      // 🔹 Get meeting UUID instead of meeting ID
+      const { meetingUUID } = await zoomSdk.getMeetingUUID();
 
-      // Send meetingID to backend
-      await fetch("/api/storeMeetingId", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({ meetingId: context.meetingID }), // 🔥 lowercase "d"!
-});
+      // 🔸 Send meetingUUID to backend as "meetingID"
+      await fetch("/api/store-meeting-id", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ meetingID: meetingUUID }),
+      });
 
+      console.log("📨 Stored meetingUUID as meetingID:", meetingUUID);
 
-      console.log("📨 Sent meeting ID to backend:", context.meetingID);
+      // 🔻 Listen for meeting end and clear meetingID
+      zoomSdk.onMeeting(async (event) => {
+        if (event.action === "ended") {
+          console.log("🛑 Meeting ended, clearing meetingID");
+
+          await fetch("/api/store-meeting-id", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ meetingID: null }),
+          });
+        }
+      });
     } else {
-      console.warn("⚠️ Not running inside Zoom client. SDK not available.");
+      console.warn("⚠️ Zoom SDK not available (not in Zoom client).");
     }
   } catch (err) {
-    console.error("❌ Error getting meeting ID:", err);
+    console.error("❌ Error with Zoom SDK:", err);
   }
 
-  // (Optional) Leave IP fetch active but remove from UI
+  // Optional IP fetch for logging/debug
   try {
     const res = await fetch('/whoami');
     const data = await res.json();
-    console.log("🌐 IP Info (for debug):", data);
+    console.log("🌐 IP Info (debug):", data);
   } catch (err) {
     console.error('❌ Failed to fetch IP address:', err);
   }

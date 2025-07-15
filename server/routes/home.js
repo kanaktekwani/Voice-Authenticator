@@ -14,23 +14,18 @@ router.post('/storeMeetingId', async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  if (!meetingId) {
-    console.warn('⚠️ No meetingId in request body. Rejecting.');
-    return res.status(400).json({ error: 'Meeting ID is required' });
-  }
-
   try {
     const result = await db.query(
       'UPDATE users SET "meetingID" = $1 WHERE id = $2',
       [meetingId, req.session.user.id]
     );
 
-    console.log(`✅ Successfully stored meetingId (${meetingId}) for user ID: ${req.session.user.id}`);
+    console.log(`✅ Successfully ${meetingId ? 'stored' : 'cleared'} meetingId for user ID: ${req.session.user.id}`);
     console.log('🧾 DB result:', result.rowCount);
     res.status(200).json({ success: true });
   } catch (err) {
     console.error('❌ DB update failed:', err.message);
-    res.status(500).json({ error: 'Failed to store meeting ID' });
+    res.status(500).json({ error: 'Failed to update meeting ID' });
   }
 });
 

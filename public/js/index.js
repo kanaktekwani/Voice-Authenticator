@@ -25,6 +25,7 @@ import axios from 'axios';
         'setEmojiReaction',
         'getEmojiConfiguration',
         'sendMessage',
+        'onMeeting'
       ],
     });
 

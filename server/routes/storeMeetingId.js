@@ -8,19 +8,16 @@ router.post("/api/store-meeting-id", requireAuth, async (req, res) => {
   const userId = res.locals.user.id;
   const { meetingID } = req.body;
 
-  if (!meetingID) {
-    return res.status(400).json({ error: "Meeting ID is required" });
-  }
-
   try {
-    await db.query(
-      "UPDATE users SET meetingID = $1 WHERE id = $2",
+    const result = await db.query(
+      'UPDATE users SET "meetingID" = $1 WHERE id = $2',
       [meetingID, userId]
     );
-    res.json({ success: true });
-  } catch (error) {
-    console.error("❌ Error storing meeting ID:", error);
-    res.status(500).json({ error: "Database error" });
+    console.log(`✅ Updated meetingUUID for user ${userId}:`, meetingID);
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error("❌ Failed to update meetingUUID:", err.message);
+    res.status(500).json({ error: "Failed to store meeting UUID" });
   }
 });
 
