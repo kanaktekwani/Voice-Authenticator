@@ -14,17 +14,20 @@ form.addEventListener('submit', async (e) => {
   });
 
   const result = await response.json();
+console.log("Login result:", result);
 
-  if (response.ok) {
-    message.style.color = 'green';
-    message.textContent = '✅ Login successful! Redirecting...';
+if (response.ok) {
+  message.style.color = 'green';
+  message.textContent = '✅ Login successful! Redirecting...';
 
-    // 🔁 Redirect to IP page
-    setTimeout(() => {
-      window.location.href = '/home.html';  // this page shows the IP
-    }, 1000);
-  } else {
-    message.style.color = 'red';
-    message.textContent = result.error || '❌ Login failed.';
-  }
+  console.log("⏩ Redirecting to /participants.html...");
+  setTimeout(() => {
+    window.location.href = '/participants.html';
+  }, 1000);
+} else {
+  console.error("❌ Login failed with:", result);
+  message.style.color = 'red';
+  message.textContent = result.error || '❌ Login failed.';
+}
+
 });
