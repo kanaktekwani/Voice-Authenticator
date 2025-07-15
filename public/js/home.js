@@ -8,6 +8,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       // 🔹 Get meeting UUID instead of meeting ID
       const { meetingUUID } = await zoomSdk.getMeetingUUID();
+      console.log("📎 Meeting UUID from Zoom SDK:", meetingUUID);
 
       // 🔸 Send meetingUUID to backend as "meetingID"
       await fetch("/api/store-meeting-id", {

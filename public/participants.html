@@ -1,39 +1,143 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Participants in Meeting</title>
-    <meta charset="UTF-8" />
-    <style>
-      body {
-        font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-        background-color: #f9f9f9;
-        margin: 2rem;
-        padding: 1rem;
-        color: #333;
-      }
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Participants in Meeting</title>
 
-      h1 {
-        font-size: 1.8rem;
-        font-weight: 600;
-        color: #222;
-        margin-bottom: 1rem;
-      }
+  <style>
+    /* ------------ Theme Tokens ------------ */
+    :root {
+      --bg-start: #0d0d16;
+      --bg-end:   #17172b;
+      --card-grad-start: rgba(35, 37, 56, 0.85);
+      --card-grad-end:   rgba(23, 24, 39, 0.85);
+      --border-glow:     rgba(80, 108, 255, 0.35);
+      --accent:          #4d6bff;      /* brand blue */
+      --accent-hover:    #4160ff;      /* darker on hover */
+      --text-primary:    #e2e4f0;
+      --text-secondary:  #9ca0c7;
+      --premium-gold:    #d4af37;
+    }
 
-      ul {
-        list-style-type: disc;
-        padding-left: 1.5rem;
-        line-height: 1.6;
-      }
+    /* ------------ Global ------------ */
+    *, *::before, *::after { box-sizing: border-box; }
 
-      li {
-        margin-bottom: 0.5rem;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>👥 Participants in This Meeting</h1>
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at 20% 20%, var(--bg-end) 0%, var(--bg-start) 100%);
+      color: var(--text-primary);
+      overflow: hidden;
+    }
+
+    /* ------------ Glass Card ------------ */
+    .card {
+      width: 100%;
+      max-width: 500px;
+      padding: 2.5rem 2rem 2.25rem;
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--card-grad-start) 0%, var(--card-grad-end) 100%);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-glow);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 12px var(--border-glow);
+    }
+
+    .brand {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin: 0 0 2rem;
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--accent), 0 0 18px var(--accent);
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 0 0 1.75rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .55rem;
+    }
+
+    h2::before {
+      content: "👥";
+      font-size: 1.6rem;
+    }
+
+    /* ------------ Participants List ------------ */
+    #participantList {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 2rem;   /* space above the button */
+    }
+
+    li {
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    .name   { font-weight: 600; }
+    .email  { font-size: .9rem; color: var(--text-secondary); }
+
+    /* Premium flair */
+    .premium .name { color: var(--premium-gold); }
+    .premium::before {
+      content: "⭐ ";
+      margin-right: .25rem;
+      font-size: 1rem;
+    }
+
+    /* ------------ Authenticate Button ------------ */
+    .auth-btn {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .auth-btn:hover,
+    .auth-btn:focus-visible {
+      background: var(--accent-hover);
+      box-shadow: 0 0 12px var(--accent-hover), 0 0 24px var(--accent-hover);
+      outline: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="brand">OriginStory</div>
+
+    <h2>Participants in This Meeting</h2>
     <ul id="participantList">Loading...</ul>
 
-    <script src="/js/participants.js"></script>
-  </body>
+    <!-- New Authenticate Me button -->
+    <button class="auth-btn" id="authBtn">Authenticate&nbsp;Me</button>
+  </div>
+
+  <script src="/js/participants.js"></script>
+  <script>
+    // Hook up future logic if needed
+    document.getElementById('authBtn').addEventListener('click', () => {
+      // TODO: trigger your auth flow
+      console.log('Authenticate Me button clicked');
+    });
+  </script>
+</body>
 </html>

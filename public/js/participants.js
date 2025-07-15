@@ -1,25 +1,33 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  const listEl = document.getElementById('participantList');
-  listEl.innerHTML = 'Loading...';
+window.addEventListener('DOMContentLoaded', async () => {
+  const list = document.getElementById('participantList');
+  list.textContent = 'Loading...';
 
   try {
     const res = await fetch('/api/meeting-participants');
     const data = await res.json();
 
-    if (!res.ok) throw new Error(data.error || 'Failed to load participants');
+    const users = data.participants || [];
 
-    if (data.participants.length === 0) {
-      listEl.innerHTML = '<li>No participants found.</li>';
+    list.innerHTML = ''; // Clear loading text
+
+    if (!users.length) {
+      list.innerHTML = '<li>No participants found in this meeting.</li>';
       return;
     }
 
-    listEl.innerHTML = '';
-    data.participants.forEach((user) => {
+    for (const user of users) {
       const li = document.createElement('li');
-      li.textContent = `${user.name} (${user.email})`;
-      listEl.appendChild(li);
-    });
+      li.innerHTML = `
+        <strong style="color: ${user.ispremium ? '#FFD700' : '#fff'}">
+          ${user.ispremium ? '⭐ ' : ''}${user.name}
+        </strong><br/>
+        <span style="font-size: 0.9em; color: #ccc;">(${user.email})</span>
+      `;
+      list.appendChild(li);
+    }
+
   } catch (err) {
-    listEl.innerHTML = `<li>Error loading participants: ${err.message}</li>`;
+    console.error('❌ Failed to fetch participants:', err);
+    list.textContent = 'Error loading participants.';
   }
 });
