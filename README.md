@@ -1,6 +1,6 @@
 # Zoom Apps JavaScript Sample
 
-This Zoom App Sample uses Node.js + Express to build a simple Hello World Zoom App.
+This Zoom App Sample uses Node.js + Express to build an Voice Authenticator App in Zoom Marketplace.
 
 ## Prerequisites
 
